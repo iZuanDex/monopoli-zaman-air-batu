@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monopoli Zaman Air Batu</title>
+<style>
+:root{--navy:#102b48;--blue:#23658b;--ice:#dff5ff;--gold:#ffd36e;--ink:#17324d;--panel:#f8fcff;--green:#6fc8a4;--red:#ef7d79}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(135deg,#dff6ff,#8fc9e9 50%,#eaf8ff);color:var(--ink)}
+button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:10px 14px;font-weight:800;transition:transform .12s,filter .12s}button:hover{filter:brightness(1.05);transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+header{background:linear-gradient(120deg,#102b48,#205c82);color:white;padding:18px clamp(14px,3vw,32px);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 6px 18px #12334a30}
+.brand{display:flex;align-items:center;gap:12px}.brand .mark{font-size:36px}.brand h1{font-size:clamp(20px,3vw,30px);line-height:1.1;margin:0}.brand p{margin:4px 0 0;color:#c8eaff;font-size:13px}.header-pill{background:#ffffff20;border:1px solid #ffffff38;border-radius:999px;padding:8px 12px;font-size:13px}
+main{max-width:1440px;margin:0 auto;padding:18px;display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,.85fr);gap:18px}
+.card{background:#ffffffed;border:1px solid #ffffff;border-radius:20px;box-shadow:0 10px 28px #1c5a7c20;padding:16px;min-width:0}.card h2{font-size:18px;margin:0 0 12px}.board-wrap{position:relative;aspect-ratio:1/1;width:100%;max-width:800px;margin:auto;background:linear-gradient(145deg,#d6f3ff,#a9dff4);border:7px solid #194a68;border-radius:18px;padding:7px;box-shadow:inset 0 0 0 3px #f7fdff,0 7px 0 #12344b}
+.board{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:repeat(7,minmax(0,1fr));gap:4px;width:100%;height:100%;position:relative}
+.tile{position:relative;min-width:0;min-height:0;border:1px solid #79b6d0;border-radius:7px;background:#f7fcff;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;padding:3px 2px;overflow:hidden;font-size:clamp(7px,.88vw,11px);font-weight:800;color:#193d59}
+.tile .stripe{height:7px;min-height:5px;width:100%;border-radius:4px;margin-bottom:2px;background:var(--tile,#7db8d5)}
+.tile .emoji{font-size:clamp(12px,1.65vw,22px);line-height:1.05}.tile .tname{line-height:1.08;overflow-wrap:anywhere}.tile .sub{font-size:clamp(6px,.65vw,9px);color:#4e7187;font-weight:700}
+.tile.start{background:#d6ffe9;border-color:#4bbf91}.tile.special{background:#fff3cf;border-color:#e7bd58}.tile.danger{background:#ffe3df;border-color:#e8897c}.tile.center{grid-column:2/7;grid-row:2/7;border-radius:12px;background:linear-gradient(145deg,#123452,#1d7196);color:#fff;display:flex;justify-content:center;gap:6px;padding:8px;background-image:radial-gradient(circle at 25% 20%,#ffffff25 0 2px,transparent 3px),linear-gradient(145deg,#123452,#1d7196)}
+.center .ice-title{font-size:clamp(16px,2.8vw,31px);font-weight:1000;letter-spacing:.04em;line-height:1.05;text-shadow:0 3px 0 #09253a}.center .center-sub{font-size:clamp(9px,1.2vw,14px);color:#d4f1ff}.center .mammoth{font-size:clamp(36px,7vw,72px)}.center .turnline{background:#ffffff18;border:1px solid #ffffff35;padding:8px 12px;border-radius:12px;font-size:clamp(9px,1vw,12px);max-width:90%}.center-die-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}.center-die{width:clamp(48px,7vw,76px);height:clamp(48px,7vw,76px);display:grid;place-items:center;border-radius:18px;background:linear-gradient(145deg,#fff,#d8f3ff);border:3px solid #b9eaff;box-shadow:0 6px 0 #6daac8,0 0 22px #a5e8ff80;font-size:clamp(30px,4.8vw,52px);color:#173b54;text-shadow:0 2px #fff;transition:transform .2s}.center-die.rolling{animation:centerDiceRoll .8s ease-in-out}.center-die.reveal{animation:diceReveal .55s ease-out}@keyframes centerDiceRoll{0%{transform:rotate(0) scale(1)}25%{transform:rotate(160deg) scale(1.22)}50%{transform:rotate(350deg) scale(.9)}75%{transform:rotate(540deg) scale(1.16)}100%{transform:rotate(720deg) scale(1)}}@keyframes diceReveal{0%{transform:scale(.7)}60%{transform:scale(1.25)}100%{transform:scale(1)}}.center-die-caption{font-size:clamp(7px,.8vw,10px);font-weight:1000;letter-spacing:.07em;color:#d9f3ff}.piece{transition:all .2s}
+.piece{position:absolute;right:3px;bottom:3px;font-size:15px;filter:drop-shadow(0 2px 1px #1235)}.tile.current{outline:3px solid #ffb900;outline-offset:-3px;box-shadow:0 0 0 2px #fff}
+.side{display:flex;flex-direction:column;gap:14px}.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.setup-grid label{font-size:12px;font-weight:800;color:#47667b;display:block;margin-bottom:4px}.setup-grid input,.setup-grid select{width:100%;border:1px solid #b8d9e8;border-radius:10px;padding:9px;background:white;color:var(--ink)}
+.primary{background:linear-gradient(120deg,#1d638a,#164363);color:white}.gold{background:linear-gradient(120deg,#ffe39a,#ffbf45);color:#4b3510}.soft{background:#e4f5ff;color:#174a6a;border:1px solid #b7e0f0}.danger-btn{background:#ffe5e3;color:#8a2d2a}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.dice-box{display:flex;align-items:center;gap:14px;background:#e9f8ff;border:1px solid #bde4f4;padding:12px;border-radius:14px}.die{width:62px;height:62px;border-radius:14px;background:white;display:grid;place-items:center;font-size:40px;box-shadow:0 4px 0 #b4d7e8;border:1px solid #c8e7f4}.rock-die{font-size:38px;transform-origin:50% 60%}.rock-die.rolling{animation:rockRoll .85s cubic-bezier(.2,.75,.25,1)}@keyframes rockRoll{0%{transform:translateY(0) rotate(0) scale(1)}18%{transform:translateY(-20px) rotate(130deg) scale(1.08)}38%{transform:translateY(3px) rotate(300deg) scale(.96)}58%{transform:translateY(-12px) rotate(480deg) scale(1.04)}78%{transform:translateY(2px) rotate(650deg) scale(.98)}100%{transform:translateY(0) rotate(720deg) scale(1)}}.space-hint{margin-top:7px;font-size:11px;color:#2c6889;display:flex;align-items:center;gap:6px;flex-wrap:wrap}kbd{font:900 11px system-ui;background:#123c59;color:white;padding:3px 7px;border-radius:5px;box-shadow:0 2px 0 #081e30}.dice-info{flex:1}.dice-info strong{display:block;font-size:15px}.dice-info small{color:#52748b}
+.score-list{display:flex;flex-direction:column;gap:8px}.player-row{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:#f0f9ff;border:1px solid #d0eaf5}.player-row.active{border:2px solid #f2b936;background:#fff9e7}.avatar{width:36px;height:36px;border-radius:11px;background:#d6effa;display:grid;place-items:center;font-size:21px;flex-shrink:0}.pinfo{flex:1;min-width:0}.pinfo strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pinfo small{color:#52748b}.points{font-weight:1000;color:#175c80;white-space:nowrap}
+.log{background:#f4fbff;border:1px solid #d4edf8;border-radius:12px;padding:10px;max-height:150px;overflow:auto;font-size:13px;line-height:1.45}.log p{margin:0 0 7px}.log p:last-child{margin-bottom:0}
+.hint{font-size:12px;color:#56768b;line-height:1.5}.overlay{position:fixed;inset:0;background:#09253bd9;display:none;align-items:center;justify-content:center;padding:18px;z-index:10;overflow:auto}.overlay.show{display:flex}.modal{width:min(640px,100%);background:#f8fcff;border-radius:22px;padding:22px;box-shadow:0 24px 80px #0018;border:4px solid #bfeaff}.modal .eyebrow{font-size:12px;letter-spacing:.1em;color:#28749a;font-weight:1000}.modal h2{margin:7px 0 10px;font-size:clamp(21px,4vw,30px)}.question{font-size:18px;font-weight:850;line-height:1.35}.answers{display:grid;gap:9px;margin-top:18px}.answer{background:white;border:2px solid #c4e1ef;color:#153c59;text-align:left;padding:13px;border-radius:13px}.answer:hover{border-color:#2479a3}.answer.correct{background:#d9ffed;border-color:#45b78c}.answer.wrong{background:#ffe5e1;border-color:#e47b71}.feedback{padding:12px;border-radius:12px;margin-top:12px;display:none;line-height:1.4}.feedback.show{display:block}.feedback.good{background:#dff9eb;color:#155e42}.feedback.bad{background:#fff0dd;color:#71430e}
+footer{text-align:center;padding:8px 18px 22px;color:#426b83;font-size:12px}
+@media(max-width:900px){main{grid-template-columns:1fr}.board-wrap{max-width:680px}.tile{font-size:clamp(8px,1.5vw,12px)}.tile .emoji{font-size:clamp(14px,2.4vw,23px)}}
+@media(max-width:480px){main{padding:10px;gap:10px}.card{padding:11px;border-radius:15px}.board-wrap{padding:4px;border-width:4px}.board{gap:2px}.tile{padding:2px 1px;border-radius:4px}.tile .stripe{height:4px;min-height:3px}.tile .sub{display:none}.tile .piece{font-size:12px}.center{padding:5px!important;gap:4px!important}.center .turnline{padding:5px}.setup-grid{grid-template-columns:1fr 1fr}.die{width:48px;height:48px;font-size:31px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="mark">🦣</div><div><h1>MONOPOLI ZAMAN AIR BATU</h1><p>Misi Menakluki Dunia Ais · Sejarah Tahun 4</p></div></div>
+  <div class="header-pill">🎲 Belajar • Jelajah • Kumpul Mata</div>
+</header>
+<main>
+<section class="card">
+  <h2>🗺️ Papan Pengembaraan</h2>
+  <div class="board-wrap"><div class="board" id="board"></div></div>
+  <p class="hint">Cara main: masukkan nama pemain, pilih bilangan pemain, kemudian tekan SPACE (atau butang Lontar Batu). Dadu di tengah papan akan berpusing dan zoom untuk menunjukkan nombor. Selepas itu, bidak bergerak satu demi satu mengikut nombor sebelum soalan dibuka.</p>
+</section>
+<aside class="side">
+  <section class="card" id="setupCard">
+    <h2>🧭 Persediaan Ekspedisi</h2>
+    <div class="setup-grid">
+      <div><label for="playerCount">Bilangan pemain</label><select id="playerCount"><option value="2">2 pemain</option><option value="3">3 pemain</option><option value="4">4 pemain</option></select></div>
+      <div><label for="rounds">Pusingan maksimum</label><select id="rounds"><option value="2">2 pusingan</option><option value="3" selected>3 pusingan</option><option value="4">4 pusingan</option><option value="5">5 pusingan</option></select></div>
+      <div><label for="name1">Pemain 1</label><input id="name1" value="Penjelajah 1" maxlength="22"></div>
+      <div><label for="name2">Pemain 2</label><input id="name2" value="Penjelajah 2" maxlength="22"></div>
+      <div><label for="name3">Pemain 3</label><input id="name3" value="Penjelajah 3" maxlength="22"></div>
+      <div><label for="name4">Pemain 4</label><input id="name4" value="Penjelajah 4" maxlength="22"></div>
+    </div>
+    <div class="actions"><button class="primary" id="startBtn">🚩 Mula Permainan</button><button class="soft" id="resetBtn">↻ Tetapkan Semula</button></div>
+    <p class="hint">Permainan ini sesuai untuk 2–4 pemain pada satu peranti. Markah disimpan sepanjang sesi permainan ini.</p>
+  </section>
+  <section class="card">
+    <h2>🎲 Giliran Semasa</h2>
+    <div class="dice-box"><div class="die rock-die" id="die" aria-label="Batu lontaran">🪨</div><div class="dice-info"><strong id="turnName">Sediakan pemain dahulu</strong><small id="turnHint">Mulakan permainan untuk bergerak.</small><div class="space-hint"><kbd>SPACE</kbd> Lontarkan batu untuk menentukan langkah!</div></div></div>
+    <div class="actions"><button class="gold" id="rollBtn" disabled>🪨 Lontar Batu (Space)</button><button class="soft" id="endTurnBtn" disabled>Tamat Giliran →</button></div>
+  </section>
+  <section class="card">
+    <h2>🏆 Skor Penjelajah</h2>
+    <div class="score-list" id="scores"><p class="hint">Skor akan muncul apabila permainan bermula.</p></div>
+  </section>
+  <section class="card">
+    <h2>📜 Catatan Ekspedisi</h2>
+    <div class="log" id="log"><p>🧊 Selamat datang! Sediakan pemain dan mulakan misi.</p></div>
+  </section>
+</aside>
+</main>
+<footer>Monopoli Zaman Air Batu · Game pembelajaran prototaip · Bukan penilaian rasmi</footer>
+
+<div class="overlay" id="modalOverlay" role="dialog" aria-modal="true">
+  <div class="modal" id="modal"></div>
+</div>
+<script>
+const tiles=[
+ {name:"MULA",emoji:"🚩",type:"start",desc:"Laluan bermula"},
+ {name:"Maksud Zaman Air Batu",emoji:"🧊",type:"quiz",color:"#62b6d8"},
+ {name:"Peti Bekalan",emoji:"🎒",type:"bonus",desc:"Bekalan ekspedisi"},
+ {name:"Garis Masa",emoji:"⏳",type:"quiz",color:"#8ac7d8"},
+ {name:"Ribut Salji",emoji:"🌨️",type:"storm",desc:"Cabaran cuaca"},
+ {name:"Pleistosen",emoji:"🦣",type:"quiz",color:"#579fc3"},
+ {name:"Kem Rehat",emoji:"🔥",type:"rest",desc:"Pulihkan semangat"},
+ {name:"Holosen",emoji:"🌿",type:"quiz",color:"#76c5a3"},
+ {name:"Perubahan Suhu",emoji:"🌡️",type:"quiz",color:"#e7a85a"},
+ {name:"Ais Mencair",emoji:"💧",type:"quiz",color:"#63bfe1"},
+ {name:"Pentas Sunda",emoji:"🗺️",type:"quiz",color:"#d1a56a"},
+ {name:"Kenaikan Paras Laut",emoji:"🌊",type:"quiz",color:"#5b9ed0"},
+ {name:"Peti Bekalan",emoji:"🎒",type:"bonus",desc:"Bekalan ekspedisi"},
+ {name:"Haiwan Zaman Air Batu",emoji:"🐘",type:"quiz",color:"#8d9ab4"},
+ {name:"Jejak Manusia",emoji:"👣",type:"quiz",color:"#c6a47b"},
+ {name:"Jaga Alam",emoji:"🌱",type:"quiz",color:"#65bd91"},
+ {name:"Ribut Salji",emoji:"🌨️",type:"storm",desc:"Cabaran cuaca"},
+ {name:"Kelestarian",emoji:"🌍",type:"quiz",color:"#6bc2a0"},
+ {name:"Misi Iktibar",emoji:"💡",type:"quiz",color:"#e5c15f"},
+ {name:"Pintu Kemenangan",emoji:"🏆",type:"finish",desc:"Habiskan misi"}
+];
+const questions=[
+ {q:"Apakah maksud Zaman Air Batu?",a:["Tempoh suhu bumi menurun sehingga kawasan luas dilitupi air batu","Zaman seluruh bumi sentiasa panas","Zaman manusia mula menggunakan komputer"],c:0,why:"Zaman Air Batu dikaitkan dengan suhu bumi yang rendah dan kawasan luas yang dilitupi air batu."},
+ {q:"Apakah dua epok yang dipelajari dalam garis masa Zaman Air Batu?",a:["Pleistosen dan Holosen","Jurassic dan Cretaceous","Paleolitik dan Neolitik"],c:0,why:"Pleistosen dan Holosen ialah dua epok yang dipelajari dalam tajuk ini."},
+ {q:"Pleistosen berlangsung kira-kira dari…",a:["2.5 juta tahun dahulu hingga 11,700 tahun dahulu","11,700 tahun dahulu hingga kini","500 tahun dahulu hingga kini"],c:0,why:"Dalam garis masa yang dipelajari, Pleistosen berlangsung kira-kira 2.5 juta hingga 11,700 tahun dahulu."},
+ {q:"Bilakah Holosen bermula?",a:["Kira-kira 11,700 tahun dahulu","Kira-kira 2.5 juta tahun dahulu","Kira-kira 100 juta tahun dahulu"],c:0,why:"Holosen bermula kira-kira 11,700 tahun dahulu dan berterusan hingga kini."},
+ {q:"Apakah kesan peningkatan suhu bumi pada akhir Zaman Air Batu?",a:["Ais mencair dan paras laut meningkat","Semua air laut membeku","Semua gunung lenyap"],c:0,why:"Peningkatan suhu menyebabkan ais mencair dan paras laut meningkat."},
+ {q:"Apakah Pentas Sunda?",a:["Kawasan pelantar benua di Asia Tenggara yang sebahagiannya ditenggelami laut apabila paras laut meningkat","Gunung berapi di Eropah","Sebuah bandar moden"],c:0,why:"Pentas Sunda ialah kawasan pelantar benua di Asia Tenggara yang mempunyai kawasan daratan lebih luas ketika paras laut rendah."},
+ {q:"Apakah kesan kenaikan paras laut terhadap tanah rendah?",a:["Sebahagian kawasan tanah rendah ditenggelami air","Semua tanah rendah menjadi gunung","Paras laut semakin menurun"],c:0,why:"Kenaikan paras laut menyebabkan sebahagian kawasan tanah rendah ditenggelami air."},
+ {q:"Haiwan manakah terkenal dengan bulu tebal dan gading panjang?",a:["Mamot berbulu","Penyu hijau","Burung merpati"],c:0,why:"Mamot berbulu ialah antara haiwan yang dikaitkan dengan persekitaran Zaman Air Batu."},
+ {q:"Mengapakah manusia perlu mengambil iktibar daripada perubahan alam?",a:["Untuk memahami kesan perubahan alam dan menyesuaikan kehidupan","Untuk mengabaikan alam sekitar","Untuk memusnahkan habitat haiwan"],c:0,why:"Iktibar sejarah membantu manusia memahami perubahan alam dan kesannya terhadap kehidupan."},
+ {q:"Apakah tindakan yang membantu mengekalkan kelestarian alam sekitar?",a:["Melindungi habitat dan mengurangkan pencemaran","Membuang sampah ke sungai","Menebang semua pokok tanpa kawalan"],c:0,why:"Melindungi habitat dan mengurangkan pencemaran membantu memelihara alam sekitar."},
+ {q:"Apakah yang berlaku apabila ais di daratan mencair dengan banyak?",a:["Air mengalir ke laut dan paras laut boleh meningkat","Paras laut pasti turun","Tiada perubahan yang mungkin berlaku"],c:0,why:"Pencairan ais daratan menyumbang kepada peningkatan paras laut."},
+ {q:"Antara berikut, yang manakah contoh perubahan fizikal alam pada akhir Zaman Air Batu?",a:["Perubahan garis pantai dan pembentukan kawasan laut","Kemunculan telefon pintar","Pembinaan lebuh raya"],c:0,why:"Kenaikan paras laut mengubah garis pantai dan kawasan daratan yang ditenggelami air."}
+];
+const tilePositions=[
+ [6,6],[5,6],[4,6],[3,6],[2,6],[1,6],[0,6],
+ [0,5],[0,4],[0,3],[0,2],[0,1],[0,0],
+ [1,0],[2,0],[3,0],[4,0],[5,0],[6,0],
+ [6,1]
+];
+let players=[],current=0,turns=0,maxTurns=3,started=false,awaiting=false,questionCount=0,logLines=[];
+const board=document.getElementById("board"),overlay=document.getElementById("modalOverlay"),modal=document.getElementById("modal");
+function log(msg){logLines.unshift(msg);logLines=logLines.slice(0,12);document.getElementById("log").innerHTML=logLines.map(x=>`<p>${x}</p>`).join("")}
+function tileHTML(t,i){let pos=tilePositions[i]||[3,3];return `<div class="tile ${t.type==='start'?'start':''} ${t.type==='bonus'||t.type==='rest'?'special':''} ${t.type==='storm'?'danger':''}" id="tile${i}" style="grid-column:${pos[0]+1};grid-row:${pos[1]+1};--tile:${t.color||'#8ac7d8'}"><div class="stripe" style="background:${t.color||'#8ac7d8'}"></div><div class="emoji">${t.emoji}</div><div class="tname">${t.name}</div><div class="sub">${t.desc|| (t.type==='quiz'?'Misi kuiz':'')}</div><div class="pieces" id="pieces${i}"></div></div>`}
+function buildBoard(){board.innerHTML=tiles.map(tileHTML).join('')+`<div class="tile center"><div class="mammoth">🦣</div><div class="ice-title">MONOPOLI<br>ZAMAN AIR BATU</div><div class="center-sub">Misi Menakluki Dunia Ais</div><div class="center-die-wrap"><div id="centerDie" class="center-die" aria-live="polite">🎲</div><div id="centerDieCaption" class="center-die-caption">TEKAN SPACE UNTUK MELONTAR</div></div><div class="turnline" id="centerTurn">Baling batu dan jelajah papan!</div><div class="center-sub">🧊 Teroka · Jawab · Kumpul Mata</div></div>`}
+buildBoard();
+function startGame(){const count=+document.getElementById('playerCount').value;maxTurns=+document.getElementById('rounds').value;players=[];for(let i=0;i<count;i++){let name=document.getElementById('name'+(i+1)).value.trim()||`Penjelajah ${i+1}`;players.push({name,position:0,score:0,turns:0,correct:0,wrong:0,icon:['🧭','🧤','🥾','⛺'][i]})}current=0;turns=0;started=true;awaiting=false;questionCount=0;logLines=[];document.getElementById('rollBtn').disabled=false;document.getElementById('endTurnBtn').disabled=true;log('🚩 Ekspedisi bermula! '+players.map(p=>p.name).join(', ')+' menyertai misi.');render();log('🎯 '+players[0].name+' memulakan giliran pertama.')}
+function render(){document.querySelectorAll('.pieces').forEach(x=>x.innerHTML='');document.querySelectorAll('.tile').forEach(x=>x.classList.remove('current'));players.forEach((p,i)=>{let el=document.getElementById('pieces'+p.position);if(el)el.innerHTML+=(el.innerHTML?' ':'')+`<span class="piece" title="${p.name}">${p.icon}</span>`});let p=players[current];document.getElementById('scores').innerHTML=players.map((p,i)=>`<div class="player-row ${i===current?'active':''}"><div class="avatar">${p.icon}</div><div class="pinfo"><strong>${escapeHTML(p.name)}</strong><small>${p.correct} betul · ${p.wrong} salah · Petak ${p.position+1}</small></div><div class="points">${p.score} pt</div></div>`).join('');document.getElementById('turnName').textContent=started?(p.name+' '+p.icon):'Sediakan pemain dahulu';document.getElementById('turnHint').textContent=started?(awaiting?'Selesaikan cabaran sebelum tamat giliran.':'Baling dadu untuk bergerak.'):'Mulakan permainan untuk bergerak.';document.getElementById('rollBtn').disabled=!started||awaiting||gameOver;document.getElementById('endTurnBtn').disabled=!started||!awaiting||gameOver;document.getElementById('centerTurn').textContent=started?`${p.icon} Giliran: ${p.name} · ${p.score} pointer`:'Baling dadu dan jelajah papan!';if(p)document.getElementById('tile'+p.position)?.classList.add('current')}
+function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+let gameOver=false;
+let rolling = false;
+const dieFaces=['⚀','⚁','⚂','⚃','⚄','⚅'];
+function rollDice(){
+ if(!started||awaiting||gameOver||rolling)return;
+ rolling=true;
+ const dieEl=document.getElementById('die');
+ const centerDie=document.getElementById('centerDie');
+ const rollBtn=document.getElementById('rollBtn');
+ rollBtn.disabled=true;
+ dieEl.classList.remove('rolling');
+ centerDie.classList.remove('rolling','reveal');
+ void centerDie.offsetWidth;
+ dieEl.classList.add('rolling');
+ centerDie.classList.add('rolling');
+ dieEl.textContent='🪨';
+ centerDie.textContent='🪨';
+ document.getElementById('turnHint').textContent='Batu sedang dilontarkan...';
+ document.getElementById('centerDieCaption').textContent='BATU SEDANG DILONTARKAN...';
+ log(`🪨 ${players[current].name} melontarkan batu untuk menentukan langkah!`);
+ const die=Math.floor(Math.random()*6)+1;
+ let ticks=0;
+ const ticker=setInterval(()=>{
+   const face=dieFaces[ticks%6];
+   dieEl.textContent=face;
+   centerDie.textContent=face;
+   ticks++;
+ },100);
+ setTimeout(()=>{
+   clearInterval(ticker);
+   dieEl.classList.remove('rolling');
+   centerDie.classList.remove('rolling');
+   centerDie.classList.add('reveal');
+   dieEl.textContent=dieFaces[die-1];
+   centerDie.textContent=dieFaces[die-1];
+   document.getElementById('centerDieCaption').textContent=`KAMU DAPAT ${die}!`;
+   document.getElementById('turnHint').textContent=`Nombor ${die} diperoleh. Lihat bidak bergerak!`;
+   log(`🎲 ${players[current].name} mendapat nombor ${die}.`);
+   const p=players[current],old=p.position;
+   const target=(p.position+die)%tiles.length;
+   const passedStart=target<old;
+   animatePlayerMove(p,target,passedStart,()=>{
+      rolling=false;
+      awaiting=true;
+      render();
+      document.getElementById('centerDieCaption').textContent=`SELESAI BERGERAK: ${die} PETAK`;
+      resolveTile(p.position);
+   });
+ },1050);
+}
+function animatePlayerMove(player,target,passedStart,done){
+ const start=player.position;
+ let steps=0;
+ const total=(target-start+tiles.length)%tiles.length;
+ const tick=()=>{
+   if(steps>=total){
+     player.position=target;
+     if(passedStart){player.score+=200;log(`🎉 ${player.name} melepasi MULA dan mendapat +200 pointer!`);}
+     log(`👣 ${player.name} mendarat di petak “${tiles[target].name}”.`);
+     render();
+     setTimeout(done,350);
+     return;
+   }
+   player.position=(player.position+1)%tiles.length;
+   steps++;
+   render();
+   const el=document.getElementById('tile'+player.position);
+   if(el){el.classList.add('current');el.animate([{transform:'scale(1)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:230});}
+   setTimeout(tick,250);
+ };
+ if(total===0){player.position=target;render();setTimeout(done,350);}else tick();
+}
+function resolveTile(idx){const t=tiles[idx],p=players[current];if(t.type==='quiz'){showQuestion()}else if(t.type==='bonus'){p.score+=100;log(`🎒 ${p.name} menjumpai Peti Bekalan: +100 pointer!`);showNotice('Peti Bekalan 🎒','Kamu menjumpai bekalan ekspedisi yang berguna!<br><b>+100 pointer</b>',()=>{awaiting=true;render()})}else if(t.type==='storm'){p.score=Math.max(0,p.score-50);log(`🌨️ ${p.name} melalui Ribut Salji. -50 pointer.`);showNotice('Ribut Salji 🌨️','Angin sejuk melambatkan perjalanan kamu.<br><b>-50 pointer</b> (skor tidak boleh kurang daripada 0)',()=>{awaiting=true;render()})}else if(t.type==='rest'){p.score+=50;log(`🔥 ${p.name} berehat di Kem Rehat dan mendapat +50 pointer.`);showNotice('Kem Rehat 🔥','Berehat seketika sebelum meneruskan pengembaraan.<br><b>+50 pointer</b>',()=>{awaiting=true;render()})}else if(t.type==='finish'){p.score+=150;log(`🏆 ${p.name} tiba di Pintu Kemenangan: +150 pointer!`);showNotice('Pintu Kemenangan 🏆','Syabas! Kamu berjaya mencapai pintu kemenangan.<br><b>+150 pointer</b>',()=>{awaiting=true;render()})}else{awaiting=true;render()}}
+function showQuestion(){const p=players[current];let q=questions[Math.floor(Math.random()*questions.length)];questionCount++;let choices=q.a.map((text,i)=>({text,correct:i===q.c})).sort(()=>Math.random()-.5);modal.innerHTML=`<div class="eyebrow">CABARAN SEJARAH · PETAK ${p.position+1}</div><h2>🧊 Uji Pengetahuan Kamu!</h2><div class="question">${q.q}</div><div class="answers">${choices.map((c,i)=>`<button class="answer" data-correct="${c.correct}" data-index="${i}">${String.fromCharCode(65+i)}. ${c.text}</button>`).join('')}</div><div class="feedback" id="feedback"></div><div class="actions"><button class="primary" id="continueBtn" style="display:none">Teruskan →</button></div>`;overlay.classList.add('show');modal.querySelectorAll('.answer').forEach(b=>b.addEventListener('click',()=>answerQuestion(b,q)))}
+function answerQuestion(btn,q){if(modal.dataset.answered==='yes')return;modal.dataset.answered='yes';const p=players[current],correct=btn.dataset.correct==='true';modal.querySelectorAll('.answer').forEach(b=>{b.disabled=true;if(b.dataset.correct==='true')b.classList.add('correct')});const f=document.getElementById('feedback');f.classList.add('show');if(correct){p.score+=100;p.correct++;f.classList.add('good');f.innerHTML=`<b>Betul! +100 pointer 🎉</b><br>${q.why}`;log(`✅ ${p.name} menjawab dengan betul: +100 pointer.`)}else{p.wrong++;p.score=Math.max(0,p.score-25);btn.classList.add('wrong');f.classList.add('bad');f.innerHTML=`<b>Belum tepat. -25 pointer.</b><br>${q.why}`;log(`🧊 ${p.name} belum tepat. Jawapan diterangkan; -25 pointer.`)}document.getElementById('continueBtn').style.display='inline-block';document.getElementById('continueBtn').onclick=()=>{overlay.classList.remove('show');modal.dataset.answered='no';awaiting=true;render()};render()}
+function showNotice(title,text,callback){modal.innerHTML=`<div class="eyebrow">KAD PENGEMBARAAN</div><h2>${title}</h2><p style="line-height:1.6">${text}</p><div class="actions"><button class="primary" id="noticeOk">Baik, teruskan</button></div>`;overlay.classList.add('show');document.getElementById('noticeOk').onclick=()=>{overlay.classList.remove('show');callback();render()}}
+function endTurn(){if(!started||!awaiting||gameOver)return;awaiting=false;current=(current+1)%players.length;if(current===0){let completed=Math.min(...players.map(p=>p.turns));if(completed>=maxTurns){finishGame();return}}render();log(`➡️ Giliran seterusnya: ${players[current].name}.`)}
+function finishGame(){gameOver=true;document.getElementById('rollBtn').disabled=true;document.getElementById('endTurnBtn').disabled=true;const ranked=[...players].sort((a,b)=>b.score-a.score);modal.innerHTML=`<div class="eyebrow">EKSPEDISI SELESAI</div><h2>🏆 Keputusan Pengembaraan!</h2><p>Semua pemain telah menamatkan pusingan yang ditetapkan.</p><div class="score-list">${ranked.map((p,i)=>`<div class="player-row"><div class="avatar">${['🥇','🥈','🥉','❄️'][i]}</div><div class="pinfo"><strong>${escapeHTML(p.name)}</strong><small>${p.correct} jawapan betul · ${p.wrong} jawapan salah</small></div><div class="points">${p.score} pt</div></div>`).join('')}</div><p style="margin-top:14px"><b>${escapeHTML(ranked[0].name)}</b> menjadi Penjelajah Terunggul dengan ${ranked[0].score} pointer!</p><div class="actions"><button class="primary" id="playAgain">Main Semula</button><button class="soft" id="printResult">Cetak Keputusan</button></div>`;overlay.classList.add('show');document.getElementById('playAgain').onclick=()=>{overlay.classList.remove('show');gameOver=false;startGame()};document.getElementById('printResult').onclick=()=>window.print();log('🏁 Permainan tamat. Tahniah kepada semua penjelajah!');render()}
+document.getElementById('startBtn').addEventListener('click',()=>{gameOver=false;startGame()});
+document.getElementById('rollBtn').addEventListener('click',rollDice);
+document.addEventListener('keydown',function(event){
+ if(event.code!=='Space')return;
+ const tag=(event.target&&event.target.tagName||'').toLowerCase();
+ if(['input','textarea','select','button'].includes(tag))return;
+ if(overlay.classList.contains('show'))return;
+ if(!started||awaiting||gameOver||rolling)return;
+ event.preventDefault();
+ rollDice();
+});
+document.getElementById('endTurnBtn').addEventListener('click',endTurn);
+document.getElementById('resetBtn').addEventListener('click',()=>{if(confirm('Tetapkan semula permainan dan skor?')){started=false;awaiting=false;gameOver=false;players=[];current=0;document.getElementById('rollBtn').disabled=true;document.getElementById('endTurnBtn').disabled=true;document.getElementById('die').textContent='🪨';document.getElementById('scores').innerHTML='<p class="hint">Skor akan muncul apabila permainan bermula.</p>';document.getElementById('turnName').textContent='Sediakan pemain dahulu';document.getElementById('turnHint').textContent='Mulakan permainan untuk bergerak.';document.getElementById('centerTurn').textContent='Baling dadu dan jelajah papan!';document.getElementById('log').innerHTML='<p>🧊 Permainan ditetapkan semula. Sedia untuk ekspedisi baharu!</p>';document.querySelectorAll('.pieces').forEach(x=>x.innerHTML='');document.querySelectorAll('.tile').forEach(x=>x.classList.remove('current'));logLines=[]}});
+</script>
+</body>
+</html>
